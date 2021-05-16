@@ -1,0 +1,39 @@
+---
+  - name: "Local Pyenv Install for Ubuntu Bionic"
+    hosts: localhost
+    connection: local
+    tasks:
+
+    - name: "Install Pyenv Dependencies"
+      apt:
+        name:
+          - make
+          - build-essential
+          - libssl-dev
+          - zlib1g-dev
+          - libbz2-dev
+          - libreadline-dev
+          - libsqlite3-dev
+          - wget
+          - curl
+          - llvm
+          - libncurses5-dev
+          - libncursesw5-dev
+          - xz-utils
+          - tk-dev
+          - libffi-dev
+          - liblzma-dev
+          - python-openssl
+        state: latest
+      become: true
+    
+    - name: "Download pyenv-installer"
+      get_url:
+        url: https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer
+        dest: /tmp/
+        mode: 0755
+    
+    - name: "Execute pyenv-installer to install pyenv"
+      shell: ./pyenv-installer
+      args:
+        chdir: /tmp/
