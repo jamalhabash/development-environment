@@ -1,0 +1,24 @@
+---
+  - name: "Local Installation of Basic Tools for Ubuntu"
+    hosts: localhost
+    connection: local
+    tasks:
+
+    - name: "Install Tools"
+      apt:
+        name:
+          - git
+          - vim
+          - curl
+          - wget
+          - tmux
+          - nmap
+          - wireshark
+          - tcpdump
+          - netcat
+        state: latest
+      become: true
+
+    - name: "Install Visual Studio Code"
+      apt:
+        deb: https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64
