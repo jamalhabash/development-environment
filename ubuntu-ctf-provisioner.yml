@@ -1,0 +1,27 @@
+---
+  - name: "Local Installation of Basic Tools for Ubuntu"
+    hosts: localhost
+    connection: local
+    tasks:
+
+    - name: "Install Tools"
+      apt:
+        name:
+          - git
+          - vim
+          - curl
+          - wget
+          - tmux
+          - nmap
+          - wireshark
+          - tcpdump
+          - netcat
+          - aircrack-ng
+          - hydra
+          - nikto
+          - socat
+          - inotify-tools
+          - sqlmap
+        state: latest
+      become: true
+
