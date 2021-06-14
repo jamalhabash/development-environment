@@ -1,0 +1,14 @@
+#!/bin/bash
+#This script is executed every time your instance is spawned.
+
+rm -rf ~/Public
+rm -rf ~/Videos
+rm -rf ~/Documents
+rm -rf ~/Music
+rm -rf ~/Templates
+rm -rf ~/Pictures
+
+[[ -d $HOME/my_data/logs ]] || mkdir $HOME/my_data/logs
+ln -s $HOME/my_data/logs $HOME/.logs
+
+wget -q -O- https://raw.githubusercontent.com/jamalhabash/development-environment/45f5e835a0cb7f88a9c9987713ffd921ff01ed0b/bashrc >> $HOME/.bashrc
