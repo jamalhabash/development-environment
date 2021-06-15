@@ -43,7 +43,7 @@ EOF
 chmod +x $bash_history_backup_script
 
 #Setup the cron job. This line will overwrite anything currently in the file.
-echo "*/5 * * * * $HOME/bash-history-backup.sh" | crontab -
+echo "*/5 * * * * $bash_history_backup_script" | crontab -
 
 #Append the generic bashrc to the existing file. Modifies how history is handled etc.
 wget -q -O- https://raw.githubusercontent.com/jamalhabash/development-environment/main/bashrc >> $HOME/.bashrc
