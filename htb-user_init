@@ -1,6 +1,5 @@
 #!/bin/bash
 #This script is executed every time your instance is spawned.
-
 rm -rf ~/Public
 rm -rf ~/Videos
 rm -rf ~/Documents
@@ -8,7 +7,33 @@ rm -rf ~/Music
 rm -rf ~/Templates
 rm -rf ~/Pictures
 
-[[ -d $HOME/my_data/logs ]] || mkdir $HOME/my_data/logs
-ln -s $HOME/my_data/logs $HOME/.logs
+[[ -d $HOME/.ssh ]] || mkdir $HOME/.ssh
 
-wget -q -O- https://raw.githubusercontent.com/jamalhabash/development-environment/45f5e835a0cb7f88a9c9987713ffd921ff01ed0b/bashrc >> $HOME/.bashrc
+#This is setting up ssh for github so you don't receive any authentication issues. StrictHostKeyChecking is set to no so that you automatically add it to the known hosts without being prompted (which stops the git clone later on)
+echo "Host github.com" >> $HOME/.ssh/config
+echo "   IdentityFile ~/my_data/htb-bash-logs-id_rsa" >> $HOME/.ssh/config
+echo "   StrictHostKeyChecking no" >> $HOME/.ssh/config
+
+#Configure git
+git config --global user.email "htb"
+git config --global user.name "htb"
+
+git clone git@github.com:jamalhabash/htb-bash-logs.git $HOME/.logs 2>$HOME/logfile
+
+#[[ -d $HOME/my_data/logs ]] || mkdir $HOME/my_data/logs
+#ln -s $HOME/my_data/logs $HOME/.logs
+
+echo "#!/bin/bash" >> $HOME/bash-history-backup.sh
+echo "">> $HOME/bash-history-backup.sh
+echo "#Run this as a cron job */5 * * * *" >> $HOME/bash-history-backup.sh
+echo "" >> $HOME/bash-history-backup.sh
+echo "cd $HOME/.logs" >> $HOME/bash-history-backup.sh
+echo "git add --all" >> $HOME/bash-history-backup.sh
+echo "git commit -m \"save bash history\"" >> $HOME/bash-history-backup.sh
+echo "git push" >> $HOME/bash-history-backup.sh
+
+chmod +x $HOME/bash-history-backup.sh
+
+echo "*/5 * * * * $HOME/bash-history-backup.sh" | crontab -
+
+wget -q -O- https://raw.githubusercontent.com/jamalhabash/development-environment/main/bashrc >> $HOME/.bashrc
