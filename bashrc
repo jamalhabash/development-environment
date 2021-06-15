@@ -28,7 +28,7 @@ fi
 
 ## The purpose of the cut is to remove the history 1 entry number
 hist_prompt() {
-    echo "$(date "+%Y-%m-%d.%H:%M:%S") $(pwd) $(history 1 | cut -f 5- -d ' ')" >> $HOME/.logs/bash-history-$(date "+%Y-%m-%d").log
+    echo "$(date "+%Y-%m-%d.%H:%M:%S") $(pwd) $(history 1 | cut -c6-)" >> $HOME/.logs/bash-history-$(date "+%Y-%m-%d").log
 }
 
 ## The second if statement is to ensure if it already exists in the prompt_command, not to add it again.
