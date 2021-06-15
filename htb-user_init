@@ -47,3 +47,4 @@ echo "*/5 * * * * $HOME/bash-history-backup.sh" | crontab -
 
 #Append the generic bashrc to the existing file. Modifies how history is handled etc.
 wget -q -O- https://raw.githubusercontent.com/jamalhabash/development-environment/main/bashrc >> $HOME/.bashrc
+echo alias cdmd=\"cd $HOME/my_data\" >> $HOME/.bashrc
