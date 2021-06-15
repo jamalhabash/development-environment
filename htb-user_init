@@ -1,5 +1,10 @@
 #!/bin/bash
 #This script is executed every time your instance is spawned.
+
+github_deploy_key=$HOME/my_data/htb-bash-logs-id_rsa
+bash_history_archive_location=$HOME/.logs
+bash_history_backup_script=$HOME/bash-history-backup.sh
+
 rm -rf ~/Public
 rm -rf ~/Videos
 rm -rf ~/Documents
@@ -9,31 +14,36 @@ rm -rf ~/Pictures
 
 [[ -d $HOME/.ssh ]] || mkdir $HOME/.ssh
 
-#This is setting up ssh for github so you don't receive any authentication issues. StrictHostKeyChecking is set to no so that you automatically add it to the known hosts without being prompted (which stops the git clone later on)
-echo "Host github.com" >> $HOME/.ssh/config
-echo "   IdentityFile ~/my_data/htb-bash-logs-id_rsa" >> $HOME/.ssh/config
-echo "   StrictHostKeyChecking no" >> $HOME/.ssh/config
+#Setup ssh for github.com
+cat > $HOME/.ssh/config << EOF
+Host github.com
+    IdentityFile $github_deploy_key
+    StrictHostKeyChecking no
+
+EOF
 
 #Configure git
 git config --global user.email "htb"
 git config --global user.name "htb"
 
-git clone git@github.com:jamalhabash/htb-bash-logs.git $HOME/.logs 2>$HOME/logfile
+git clone git@github.com:jamalhabash/htb-bash-logs.git $bash_history_archive_location
 
-#[[ -d $HOME/my_data/logs ]] || mkdir $HOME/my_data/logs
-#ln -s $HOME/my_data/logs $HOME/.logs
+#Create the bash history backup script file
+cat > $bash_history_backup_script << EOF
+#!/bin/bash
+#Run this as a cron job */5 * * * *
 
-echo "#!/bin/bash" >> $HOME/bash-history-backup.sh
-echo "">> $HOME/bash-history-backup.sh
-echo "#Run this as a cron job */5 * * * *" >> $HOME/bash-history-backup.sh
-echo "" >> $HOME/bash-history-backup.sh
-echo "cd $HOME/.logs" >> $HOME/bash-history-backup.sh
-echo "git add --all" >> $HOME/bash-history-backup.sh
-echo "git commit -m \"save bash history\"" >> $HOME/bash-history-backup.sh
-echo "git push" >> $HOME/bash-history-backup.sh
+cd $bash_history_archive_location
+git add --all
+git commit -m "save bash history"
+git push
 
-chmod +x $HOME/bash-history-backup.sh
+EOF
 
+chmod +x $bash_history_backup_script
+
+#Setup the cron job. This line will overwrite anything currently in the file.
 echo "*/5 * * * * $HOME/bash-history-backup.sh" | crontab -
 
+#Append the generic bashrc to the existing file. Modifies how history is handled etc.
 wget -q -O- https://raw.githubusercontent.com/jamalhabash/development-environment/main/bashrc >> $HOME/.bashrc
