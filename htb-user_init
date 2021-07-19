@@ -48,3 +48,4 @@ echo "*/5 * * * * $bash_history_backup_script" | crontab -
 #Append the generic bashrc to the existing file. Modifies how history is handled etc.
 wget -q -O- https://raw.githubusercontent.com/jamalhabash/development-environment/main/bashrc >> $HOME/.bashrc
 echo alias cdmd=\"cd $HOME/my_data\" >> $HOME/.bashrc
+echo alias ghl='tempfunc(){ grep "$@" $bash_history_archive_location/*; unset -f tempfunc; }; tempfunc'
